@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "682066856386",
+    "project_id": "research-cvs",
+    "storage_bucket": "research-cvs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682066856386:android:a5bd7a718dc06747feae5b",
+        "android_client_info": {
+          "package_name": "com.research.cvs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682066856386-015bd5cbcn8iqa5i7ume0msg249lccjb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtbsB3HYJOuMZ_yfNtrbWCD4f25p1RNqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682066856386-015bd5cbcn8iqa5i7ume0msg249lccjb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
