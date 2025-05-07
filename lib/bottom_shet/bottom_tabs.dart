@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resarch_csv/main_screen/user_screen/acivment_screen.dart';
 import 'package:resarch_csv/main_screen/user_screen/home_screen.dart';
 import 'package:resarch_csv/main_screen/user_screen/profile_screen.dart';
 
@@ -12,9 +11,6 @@ class TabNavigationItem {
   static List<TabNavigationItem> get items => [
         TabNavigationItem(
           page: home_screen(),
-        ),
-        TabNavigationItem(
-          page: acivment_screen(),
         ),
         TabNavigationItem(
           page: profile_screen(),

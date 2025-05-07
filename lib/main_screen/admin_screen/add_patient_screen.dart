@@ -20,7 +20,6 @@ class _add_patient_screen extends State<add_patient_screen> {
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -35,11 +34,8 @@ class _add_patient_screen extends State<add_patient_screen> {
     });
     FirebaseFirestore.instance.collection('user').add({
       'user_type': '0',
-      'done_date': '',
+      'start_date': '',
       'user_profile': '',
-      'done_week': '0',
-      'done_day': '0',
-      'achievement': '0',
       'userName': userNameController.text,
       'password': passwordController.text,
       'name': nameController.text,
@@ -53,54 +49,104 @@ class _add_patient_screen extends State<add_patient_screen> {
                     .add({
                       'user_id': value.id,
                       'userName': userNameController.text,
-                      'W1 AP time': '',
-                      'W1 AP date': '',
                       'W1 D1 time': '',
                       'W1 D1 date': '',
                       'W1 D2 time': '',
                       'W1 D2 date': '',
                       'W1 D3 time': '',
                       'W1 D3 date': '',
-                      'W2 AP time': '',
-                      'W2 AP date': '',
+                      'W1 D4 time': '',
+                      'W1 D4 date': '',
+                      'W1 D5 time': '',
+                      'W1 D5 date': '',
+                      'W1 D6 time': '',
+                      'W1 D6 date': '',
+                      'W1 D7 time': '',
+                      'W1 D7 date': '',
                       'W2 D1 time': '',
                       'W2 D1 date': '',
                       'W2 D2 time': '',
                       'W2 D2 date': '',
                       'W2 D3 time': '',
                       'W2 D3 date': '',
-                      'W3 AP time': '',
-                      'W3 AP date': '',
+                      'W2 D4 time': '',
+                      'W2 D4 date': '',
+                      'W2 D5 time': '',
+                      'W2 D5 date': '',
+                      'W2 D6 time': '',
+                      'W2 D6 date': '',
+                      'W2 D7 time': '',
+                      'W2 D7 date': '',
                       'W3 D1 time': '',
                       'W3 D1 date': '',
                       'W3 D2 time': '',
                       'W3 D2 date': '',
                       'W3 D3 time': '',
                       'W3 D3 date': '',
-                      'W4 AP time': '',
-                      'W4 AP date': '',
+                      'W3 D4 time': '',
+                      'W3 D4 date': '',
+                      'W3 D5 time': '',
+                      'W3 D5 date': '',
+                      'W3 D6 time': '',
+                      'W3 D6 date': '',
+                      'W3 D7 time': '',
+                      'W3 D7 date': '',
                       'W4 D1 time': '',
                       'W4 D1 date': '',
                       'W4 D2 time': '',
                       'W4 D2 date': '',
                       'W4 D3 time': '',
                       'W4 D3 date': '',
-                      'W5 AP time': '',
-                      'W5 AP date': '',
+                      'W4 D4 time': '',
+                      'W4 D4 date': '',
+                      'W4 D5 time': '',
+                      'W4 D5 date': '',
+                      'W4 D6 time': '',
+                      'W4 D6 date': '',
+                      'W4 D7 time': '',
+                      'W4 D7 date': '',
                       'W5 D1 time': '',
                       'W5 D1 date': '',
                       'W5 D2 time': '',
                       'W5 D2 date': '',
                       'W5 D3 time': '',
                       'W5 D3 date': '',
-                      'W6 AP time': '',
-                      'W6 AP date': '',
+                      'W5 D4 time': '',
+                      'W5 D4 date': '',
+                      'W5 D5 time': '',
+                      'W5 D5 date': '',
+                      'W5 D6 time': '',
+                      'W5 D6 date': '',
+                      'W5 D7 time': '',
+                      'W5 D7 date': '',
                       'W6 D1 time': '',
                       'W6 D1 date': '',
                       'W6 D2 time': '',
                       'W6 D2 date': '',
                       'W6 D3 time': '',
                       'W6 D3 date': '',
+                      'W6 D4 time': '',
+                      'W6 D4 date': '',
+                      'W6 D5 time': '',
+                      'W6 D5 date': '',
+                      'W6 D6 time': '',
+                      'W6 D6 date': '',
+                      'W6 D7 time': '',
+                      'W6 D7 date': '',
+                      'W7 D1 time': '',
+                      'W7 D1 date': '',
+                      'W7 D2 time': '',
+                      'W7 D2 date': '',
+                      'W7 D3 time': '',
+                      'W7 D3 date': '',
+                      'W7 D4 time': '',
+                      'W7 D4 date': '',
+                      'W7 D5 time': '',
+                      'W7 D5 date': '',
+                      'W7 D6 time': '',
+                      'W7 D6 date': '',
+                      'W7 D7 time': '',
+                      'W7 D7 date': '',
                     })
                     .then((value) => {
                           FirebaseFirestore.instance
@@ -122,7 +168,7 @@ class _add_patient_screen extends State<add_patient_screen> {
   }
 
   void showSnackBar(text) {
-    _scaffoldKey.currentState!.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
       ),
@@ -344,27 +390,28 @@ class _add_patient_screen extends State<add_patient_screen> {
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
-                        : RaisedButton(
-                            onPressed: () {
-                              if (formKeyPatient.currentState!.validate()) {
-                                formKeyPatient.currentState!.save();
-                                addPatient();
-                              }
-                            },
-                            color: const Color(0xffC299F6),
+                        : ElevatedButton(
+                          onPressed: () {
+                            if (formKeyPatient.currentState!.validate()) {
+                              formKeyPatient.currentState!.save();
+                              addPatient();
+                            }
+                          },
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 20),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.only(
+                                left: 30, right: 30, top: 8, bottom: 8), backgroundColor: const Color(0xffC299F6),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),
-                            padding: const EdgeInsets.only(
-                                left: 30, right: 30, top: 8, bottom: 8),
-                            child: const Text(
-                              'Submit',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 20),
-                            ),
                           ),
+                        ),
                   ],
                 ),
               ),

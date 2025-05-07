@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:csv/csv.dart';
-import 'package:ext_storage/ext_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:resarch_csv/utils/LoadCsvDataScreen.dart';
 
-class download_data extends StatefulWidget {
+class DownloadData extends StatefulWidget {
   @override
-  _download_data createState() => _download_data();
+  _DownloadData createState() => _DownloadData();
 }
 
-class _download_data extends State<download_data> {
+class _DownloadData extends State<DownloadData> {
   @override
   void initState() {
     super.initState();
@@ -47,14 +47,16 @@ class _download_data extends State<download_data> {
 
     String csv = const ListToCsvConverter().convert(rows);
 
-    String? dir = await ExtStorage.getExternalStoragePublicDirectory(
-        ExtStorage.DIRECTORY_DOWNLOADS);
-    print("dir $dir");
-    String file = "$dir";
+    Directory? dir = await getExternalStorageDirectory();
+    if (dir != null) {
+      String path = "${dir.path}/Downloads";
+      Directory(path).createSync(recursive: true);
+      File file = File("$path/filename.csv");
 
-    File f = File(file + "/filename.csv");
-
-    f.writeAsString(csv);
+      await file.writeAsString(csv);
+    } else {
+      print("Unable to find the external storage directory");
+    }
   }
 
   @override
@@ -62,36 +64,43 @@ class _download_data extends State<download_data> {
     return Scaffold(
       appBar: AppBar(title: Text("All CSV Files")),
       body: FutureBuilder(
+        future: _getCsvFiles(),
         builder: (context, AsyncSnapshot<List<FileSystemEntity>> snapshot) {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text("empty");
-          }
-          print('${snapshot.data!.length} ${snapshot.data}');
-          if (snapshot.data!.length == 0) {
-            return Center(
-              child: Text('No Csv File found.'),
-            );
+            return Center(child: Text("No CSV file found."));
           }
           return ListView.builder(
+            itemCount: snapshot.data!.length,
             itemBuilder: (context, index) => Card(
               child: ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            LoadCsvDataScreen(path: snapshot.data![index].path),
-                      ),
-                    );
-                  },
-                  title: Text(
-                    snapshot.data![index].path.substring(44),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          LoadCsvDataScreen(path: snapshot.data![index].path),
+                    ),
+                  );
+                },
+                title: Text(
+                  snapshot.data![index].path.split('/').last,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
-            itemCount: snapshot.data!.length,
           );
         },
       ),
     );
+  }
+
+  Future<List<FileSystemEntity>> _getCsvFiles() async {
+    Directory? dir = await getExternalStorageDirectory();
+    if (dir != null) {
+      String path = "${dir.path}/Downloads";
+      Directory directory = Directory(path);
+      return directory.listSync().where((item) => item.path.endsWith(".csv")).toList();
+    } else {
+      return [];
+    }
   }
 }

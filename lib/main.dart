@@ -11,7 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications_plus/flutter_local_notifications_plus.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -41,47 +41,15 @@ String? selectedNotificationPayload;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await _configureLocalTimeZone();
-  // NotificationPlugin().init();
   LocalNotification().initialize();
 
   HttpOverrides.global = MyHttpOverrides();
   await Firebase.initializeApp();
-  // [
-  //   'time.google.com',
-  //   'time.facebook.com',
-  //   'time.euro.apple.com',
-  //   'pool.ntp.org',
-  // ].forEach(_checkTime);
-/*  await AwesomeNotifications().createNotification(
-    content: NotificationContent(
-      id: 0,
-      channelKey: 'scheduled',
-      title: 'wait 5 seconds to show',
-      body: 'now is 5 seconds later',
-      wakeUpScreen: true,
-      category: NotificationCategory.Alarm,
-    ),
-    schedule: NotificationInterval(
-        interval: 5,
-        // timeZone: localTimeZone,
-        preciseAlarm: true,
-        timeZone: await AwesomeNotifications().getLocalTimeZoneIdentifier()),
-  );*/
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(MyApp());
   });
-}
-
-Future<void> _configureLocalTimeZone() async {
-  if (kIsWeb || Platform.isLinux) {
-    return;
-  }
-  tz.initializeTimeZones();
-  final String? timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-  tz.setLocalLocation(tz.getLocation(timeZoneName!));
 }
 
 class MyApp extends StatefulWidget {
@@ -95,24 +63,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool startStop = true;
   String elapsedTime = '';
   var userData;
-  final DateFormat formatter = DateFormat('dd/MM/yy');
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
   @override
   void initState() {
     WidgetsBinding.instance!.addObserver(this);
 
-    startWatch();
+    // startWatch();
     super.initState();
   }
 
   updateTime(Timer timer) {
-    // if (watch.isRunning) {
-    //   setState(() {
-    //     elapsedTime = transformMilliSeconds(watch.elapsedMilliseconds);
-    //   });
-    // }
     elapsedTime = transformMilliSeconds(watch.elapsedMilliseconds);
-    // print('elapsedTime $elapsedTime');
   }
 
   startWatch() async {
@@ -122,7 +84,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
 
     timer = Timer.periodic(Duration(milliseconds: 100), updateTime);
-    print('timer${timer!.tick}');
+    // print('timer${timer!.tick}');
   }
 
   stopWatch() {
@@ -155,7 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   updateDataInTable(time) async {
-    var param;
+    var param, curDay, curWeek;
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     await FirebaseFirestore.instance
@@ -168,20 +130,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 if (doc != null) {
                   Map<String, dynamic>? documentData = doc.data()
                       as Map<String, dynamic>?; //if it is a single document
-                  print('User Data');
-                  print(documentData.toString());
+                  // print('User Data');
+                  // print(documentData.toString());
 
                   setState(() {
                     userData = documentData;
                   });
-                  param =
-                      'W${int.parse(userData['done_week'])} ${int.parse(userData['done_day']) == 3 ? 'AP' : 'D'}${int.parse(userData['done_day']) == 3 ? '' : int.parse(userData['done_day']) + 1}';
+                  curWeek = (documentData!['start_date'].difference(DateTime.now()).inDays) / 7;
+                  curDay = (documentData!['start_date'].difference(DateTime.now()).inDays) % 7;
+                  param = 'W${curWeek + 1} D${curDay + 1}';
                 }
               }),
             });
 
-    print('time $time');
-    print('param $param time');
+    // print('time $time');
+    // print('param $param time');
     if (param != null && param != '') {
       FirebaseFirestore.instance
           .collection('watchDataTable')
@@ -229,21 +192,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return Duration(hours: hours, minutes: minutes, microseconds: micros);
   }
 
-  Duration Durations(String s) {
-    int hours = 0;
-    int minutes = 0;
-    int micros;
-    List<String> parts = s.split(':');
-    if (parts.length > 2) {
-      hours = int.parse(parts[parts.length - 3]);
-    }
-    if (parts.length > 1) {
-      minutes = int.parse(parts[parts.length - 2]);
-    }
-    micros = (double.parse(parts[parts.length - 1]) * 1000000).round();
-    return Duration(hours: hours, minutes: minutes);
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -278,11 +226,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.resumed:
         print('appLifeCycleState resumed');
-        startWatch();
+        // startWatch();
         break;
       case AppLifecycleState.paused:
         print('appLifeCycleState paused');
-        stopWatch();
+        // stopWatch();
         break;
       case AppLifecycleState.detached:
         print('appLifeCycleState detached');

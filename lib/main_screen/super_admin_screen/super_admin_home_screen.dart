@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +20,6 @@ class super_admin_home_screen extends StatefulWidget {
 }
 
 class _super_admin_home_screen extends State<super_admin_home_screen> {
-
   List<dynamic> associateList = [];
 
   getDownloadData() async {
@@ -33,30 +33,104 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                   setState(() {
                     associateList.add({
                       "Username": querySnapshot.docs[i]['userName'],
-                      "W1 AP": '${querySnapshot.docs[i]['W1 AP time'] + '-' + querySnapshot.docs[i]['W1 AP date']}',
-                      "W1 D1": '${querySnapshot.docs[i]['W1 D1 time'] + '-' + querySnapshot.docs[i]['W1 D1 date']}',
-                      "W1 D2": '${querySnapshot.docs[i]['W1 D2 time'] + '-' + querySnapshot.docs[i]['W1 D2 date']}',
-                      "W1 D3": '${querySnapshot.docs[i]['W1 D3 time'] + '-' + querySnapshot.docs[i]['W1 D3 date']}',
-                      "W2 AP": '${querySnapshot.docs[i]['W2 AP time'] + '-' + querySnapshot.docs[i]['W2 AP date']}',
-                      "W2 D1": '${querySnapshot.docs[i]['W2 D1 time'] + '-' + querySnapshot.docs[i]['W2 D1 date']}',
-                      "W2 D2": '${querySnapshot.docs[i]['W2 D2 time'] + '-' + querySnapshot.docs[i]['W2 D2 date']}',
-                      "W2 D3": '${querySnapshot.docs[i]['W2 D3 time'] + '-' + querySnapshot.docs[i]['W2 D3 date']}',
-                      "W3 AP": '${querySnapshot.docs[i]['W3 AP time'] + '-' + querySnapshot.docs[i]['W3 AP date']}',
-                      "W3 D1": '${querySnapshot.docs[i]['W3 D1 time'] + '-' + querySnapshot.docs[i]['W3 D1 date']}',
-                      "W3 D2": '${querySnapshot.docs[i]['W3 D2 time'] + '-' + querySnapshot.docs[i]['W3 D2 date']}',
-                      "W3 D3": '${querySnapshot.docs[i]['W3 D3 time'] + '-' + querySnapshot.docs[i]['W3 D3 date']}',
-                      "W4 AP": '${querySnapshot.docs[i]['W4 AP time'] + '-' + querySnapshot.docs[i]['W4 AP date']}',
-                      "W4 D1": '${querySnapshot.docs[i]['W4 D1 time'] + '-' + querySnapshot.docs[i]['W4 D1 date']}',
-                      "W4 D2": '${querySnapshot.docs[i]['W4 D2 time'] + '-' + querySnapshot.docs[i]['W4 D2 date']}',
-                      "W4 D3": '${querySnapshot.docs[i]['W4 D3 time'] + '-' + querySnapshot.docs[i]['W4 D3 date']}',
-                      "W5 AP": '${querySnapshot.docs[i]['W5 AP time'] + '-' + querySnapshot.docs[i]['W5 AP date']}',
-                      "W5 D1": '${querySnapshot.docs[i]['W5 D1 time'] + '-' + querySnapshot.docs[i]['W5 D1 date']}',
-                      "W5 D2": '${querySnapshot.docs[i]['W5 D2 time'] + '-' + querySnapshot.docs[i]['W5 D2 date']}',
-                      "W5 D3": '${querySnapshot.docs[i]['W5 D3 time'] + '-' + querySnapshot.docs[i]['W5 D3 date']}',
-                      "W6 AP": '${querySnapshot.docs[i]['W6 AP time'] + '-' + querySnapshot.docs[i]['W6 AP date']}',
-                      "W6 D1": '${querySnapshot.docs[i]['W6 D1 time'] + '-' + querySnapshot.docs[i]['W6 D1 date']}',
-                      "W6 D2": '${querySnapshot.docs[i]['W6 D2 time'] + '-' + querySnapshot.docs[i]['W6 D2 date']}',
-                      "W6 D3": '${querySnapshot.docs[i]['W6 D3 time'] + '-' + querySnapshot.docs[i]['W6 D3 date']}',
+                      "W1 D1":
+                      '${querySnapshot.docs[i]['W1 D1 time'] + '-' + querySnapshot.docs[i]['W1 D1 date']}',
+                      "W1 D2":
+                      '${querySnapshot.docs[i]['W1 D2 time'] + '-' + querySnapshot.docs[i]['W1 D2 date']}',
+                      "W1 D3":
+                      '${querySnapshot.docs[i]['W1 D3 time'] + '-' + querySnapshot.docs[i]['W1 D3 date']}',
+                      "W1 D4":
+                      '${querySnapshot.docs[i]['W1 D4 time'] + '-' + querySnapshot.docs[i]['W1 D4 date']}',
+                      "W1 D5":
+                      '${querySnapshot.docs[i]['W1 D5 time'] + '-' + querySnapshot.docs[i]['W1 D5 date']}',
+                      "W1 D6":
+                      '${querySnapshot.docs[i]['W1 D6 time'] + '-' + querySnapshot.docs[i]['W1 D6 date']}',
+                      "W1 D7":
+                      '${querySnapshot.docs[i]['W1 D7 time'] + '-' + querySnapshot.docs[i]['W1 D7 date']}',
+                      "W2 D1":
+                      '${querySnapshot.docs[i]['W2 D1 time'] + '-' + querySnapshot.docs[i]['W2 D1 date']}',
+                      "W2 D2":
+                      '${querySnapshot.docs[i]['W2 D2 time'] + '-' + querySnapshot.docs[i]['W2 D2 date']}',
+                      "W2 D3":
+                      '${querySnapshot.docs[i]['W2 D3 time'] + '-' + querySnapshot.docs[i]['W2 D3 date']}',
+                      "W2 D4":
+                      '${querySnapshot.docs[i]['W2 D4 time'] + '-' + querySnapshot.docs[i]['W2 D4 date']}',
+                      "W2 D5":
+                      '${querySnapshot.docs[i]['W2 D5 time'] + '-' + querySnapshot.docs[i]['W2 D5 date']}',
+                      "W2 D6":
+                      '${querySnapshot.docs[i]['W2 D6 time'] + '-' + querySnapshot.docs[i]['W2 D6 date']}',
+                      "W2 D7":
+                      '${querySnapshot.docs[i]['W2 D7 time'] + '-' + querySnapshot.docs[i]['W2 D7 date']}',
+                      "W3 D1":
+                      '${querySnapshot.docs[i]['W3 D1 time'] + '-' + querySnapshot.docs[i]['W3 D1 date']}',
+                      "W3 D2":
+                      '${querySnapshot.docs[i]['W3 D2 time'] + '-' + querySnapshot.docs[i]['W3 D2 date']}',
+                      "W3 D3":
+                      '${querySnapshot.docs[i]['W3 D3 time'] + '-' + querySnapshot.docs[i]['W3 D3 date']}',
+                      "W3 D4":
+                      '${querySnapshot.docs[i]['W3 D4 time'] + '-' + querySnapshot.docs[i]['W3 D4 date']}',
+                      "W3 D5":
+                      '${querySnapshot.docs[i]['W3 D5 time'] + '-' + querySnapshot.docs[i]['W3 D5 date']}',
+                      "W3 D6":
+                      '${querySnapshot.docs[i]['W3 D6 time'] + '-' + querySnapshot.docs[i]['W3 D6 date']}',
+                      "W3 D7":
+                      '${querySnapshot.docs[i]['W3 D7 time'] + '-' + querySnapshot.docs[i]['W3 D7 date']}',
+                      "W4 D1":
+                      '${querySnapshot.docs[i]['W4 D1 time'] + '-' + querySnapshot.docs[i]['W4 D1 date']}',
+                      "W4 D2":
+                      '${querySnapshot.docs[i]['W4 D2 time'] + '-' + querySnapshot.docs[i]['W4 D2 date']}',
+                      "W4 D3":
+                      '${querySnapshot.docs[i]['W4 D3 time'] + '-' + querySnapshot.docs[i]['W4 D3 date']}',
+                      "W4 D4":
+                      '${querySnapshot.docs[i]['W4 D4 time'] + '-' + querySnapshot.docs[i]['W4 D4 date']}',
+                      "W4 D5":
+                      '${querySnapshot.docs[i]['W4 D5 time'] + '-' + querySnapshot.docs[i]['W4 D5 date']}',
+                      "W4 D6":
+                      '${querySnapshot.docs[i]['W4 D6 time'] + '-' + querySnapshot.docs[i]['W4 D6 date']}',
+                      "W4 D7":
+                      '${querySnapshot.docs[i]['W4 D7 time'] + '-' + querySnapshot.docs[i]['W4 D7 date']}',
+                      "W5 D1":
+                      '${querySnapshot.docs[i]['W5 D1 time'] + '-' + querySnapshot.docs[i]['W5 D1 date']}',
+                      "W5 D2":
+                      '${querySnapshot.docs[i]['W5 D2 time'] + '-' + querySnapshot.docs[i]['W5 D2 date']}',
+                      "W5 D3":
+                      '${querySnapshot.docs[i]['W5 D3 time'] + '-' + querySnapshot.docs[i]['W5 D3 date']}',
+                      "W5 D4":
+                      '${querySnapshot.docs[i]['W5 D4 time'] + '-' + querySnapshot.docs[i]['W5 D4 date']}',
+                      "W5 D5":
+                      '${querySnapshot.docs[i]['W5 D5 time'] + '-' + querySnapshot.docs[i]['W5 D5 date']}',
+                      "W5 D6":
+                      '${querySnapshot.docs[i]['W5 D6 time'] + '-' + querySnapshot.docs[i]['W5 D6 date']}',
+                      "W5 D7":
+                      '${querySnapshot.docs[i]['W5 D7 time'] + '-' + querySnapshot.docs[i]['W5 D7 date']}',
+                      "W6 D1":
+                      '${querySnapshot.docs[i]['W6 D1 time'] + '-' + querySnapshot.docs[i]['W6 D1 date']}',
+                      "W6 D2":
+                      '${querySnapshot.docs[i]['W6 D2 time'] + '-' + querySnapshot.docs[i]['W6 D2 date']}',
+                      "W6 D3":
+                      '${querySnapshot.docs[i]['W6 D3 time'] + '-' + querySnapshot.docs[i]['W6 D3 date']}',
+                      "W6 D4":
+                      '${querySnapshot.docs[i]['W6 D4 time'] + '-' + querySnapshot.docs[i]['W6 D4 date']}',
+                      "W6 D5":
+                      '${querySnapshot.docs[i]['W6 D5 time'] + '-' + querySnapshot.docs[i]['W6 D5 date']}',
+                      "W6 D6":
+                      '${querySnapshot.docs[i]['W6 D6 time'] + '-' + querySnapshot.docs[i]['W6 D6 date']}',
+                      "W6 D7":
+                      '${querySnapshot.docs[i]['W6 D7 time'] + '-' + querySnapshot.docs[i]['W6 D7 date']}',
+                      "W7 D1":
+                      '${querySnapshot.docs[i]['W7 D1 time'] + '-' + querySnapshot.docs[i]['W7 D1 date']}',
+                      "W7 D2":
+                      '${querySnapshot.docs[i]['W7 D2 time'] + '-' + querySnapshot.docs[i]['W7 D2 date']}',
+                      "W7 D3":
+                      '${querySnapshot.docs[i]['W7 D3 time'] + '-' + querySnapshot.docs[i]['W7 D3 date']}',
+                      "W7 D4":
+                      '${querySnapshot.docs[i]['W7 D4 time'] + '-' + querySnapshot.docs[i]['W7 D4 date']}',
+                      "W7 D5":
+                      '${querySnapshot.docs[i]['W7 D5 time'] + '-' + querySnapshot.docs[i]['W7 D5 date']}',
+                      "W7 D6":
+                      '${querySnapshot.docs[i]['W7 D6 time'] + '-' + querySnapshot.docs[i]['W7 D6 date']}',
+                      "W7 D7":
+                      '${querySnapshot.docs[i]['W7 D7 time'] + '-' + querySnapshot.docs[i]['W7 D7 date']}',
                     });
                   }),
                 }
@@ -85,58 +159,108 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
 
     List<dynamic> row = [];
     row.add("Username");
-    row.add("W1 AP");
     row.add("W1 D1");
     row.add("W1 D2");
     row.add("W1 D3");
-    row.add("W2 AP");
+    row.add("W1 D4");
+    row.add("W1 D5");
+    row.add("W1 D6");
+    row.add("W1 D7");
     row.add("W2 D1");
     row.add("W2 D2");
     row.add("W2 D3");
-    row.add("W3 AP");
+    row.add("W2 D4");
+    row.add("W2 D5");
+    row.add("W2 D6");
+    row.add("W2 D7");
     row.add("W3 D1");
     row.add("W3 D2");
     row.add("W3 D3");
-    row.add("W4 AP");
+    row.add("W3 D4");
+    row.add("W3 D5");
+    row.add("W3 D6");
+    row.add("W3 D7");
     row.add("W4 D1");
     row.add("W4 D2");
     row.add("W4 D3");
-    row.add("W5 AP");
+    row.add("W4 D4");
+    row.add("W4 D5");
+    row.add("W4 D6");
+    row.add("W4 D7");
     row.add("W5 D1");
     row.add("W5 D2");
     row.add("W5 D3");
-    row.add("W6 AP");
+    row.add("W5 D4");
+    row.add("W5 D5");
+    row.add("W5 D6");
+    row.add("W5 D7");
     row.add("W6 D1");
     row.add("W6 D2");
     row.add("W6 D3");
+    row.add("W6 D4");
+    row.add("W6 D5");
+    row.add("W6 D6");
+    row.add("W6 D7");
+    row.add("W7 D1");
+    row.add("W7 D2");
+    row.add("W7 D3");
+    row.add("W7 D4");
+    row.add("W7 D5");
+    row.add("W7 D6");
+    row.add("W7 D7");
     rows.add(row);
     for (int i = 0; i < associateList.length; i++) {
       List<dynamic> row = [];
       row.add(associateList[i]["Username"]);
-      row.add(associateList[i]["W1 AP"]);
       row.add(associateList[i]["W1 D1"]);
       row.add(associateList[i]["W1 D2"]);
       row.add(associateList[i]["W1 D3"]);
-      row.add(associateList[i]["W2 AP"]);
+      row.add(associateList[i]["W1 D4"]);
+      row.add(associateList[i]["W1 D5"]);
+      row.add(associateList[i]["W1 D6"]);
+      row.add(associateList[i]["W1 D7"]);
       row.add(associateList[i]["W2 D1"]);
       row.add(associateList[i]["W2 D2"]);
       row.add(associateList[i]["W2 D3"]);
-      row.add(associateList[i]["W3 AP"]);
+      row.add(associateList[i]["W2 D4"]);
+      row.add(associateList[i]["W2 D5"]);
+      row.add(associateList[i]["W2 D6"]);
+      row.add(associateList[i]["W2 D7"]);
       row.add(associateList[i]["W3 D1"]);
       row.add(associateList[i]["W3 D2"]);
       row.add(associateList[i]["W3 D3"]);
-      row.add(associateList[i]["W4 AP"]);
+      row.add(associateList[i]["W3 D4"]);
+      row.add(associateList[i]["W3 D5"]);
+      row.add(associateList[i]["W3 D6"]);
+      row.add(associateList[i]["W3 D7"]);
       row.add(associateList[i]["W4 D1"]);
       row.add(associateList[i]["W4 D2"]);
       row.add(associateList[i]["W4 D3"]);
-      row.add(associateList[i]["W5 AP"]);
+      row.add(associateList[i]["W4 D4"]);
+      row.add(associateList[i]["W4 D5"]);
+      row.add(associateList[i]["W4 D6"]);
+      row.add(associateList[i]["W4 D7"]);
       row.add(associateList[i]["W5 D1"]);
       row.add(associateList[i]["W5 D2"]);
       row.add(associateList[i]["W5 D3"]);
-      row.add(associateList[i]["W6 AP"]);
+      row.add(associateList[i]["W5 D4"]);
+      row.add(associateList[i]["W5 D5"]);
+      row.add(associateList[i]["W5 D6"]);
+      row.add(associateList[i]["W5 D7"]);
       row.add(associateList[i]["W6 D1"]);
       row.add(associateList[i]["W6 D2"]);
       row.add(associateList[i]["W6 D3"]);
+      row.add(associateList[i]["W6 D4"]);
+      row.add(associateList[i]["W6 D5"]);
+      row.add(associateList[i]["W6 D6"]);
+      row.add(associateList[i]["W6 D7"]);
+      row.add(associateList[i]["W7 D1"]);
+      row.add(associateList[i]["W7 D2"]);
+      row.add(associateList[i]["W7 D3"]);
+      row.add(associateList[i]["W7 D4"]);
+      row.add(associateList[i]["W7 D5"]);
+      row.add(associateList[i]["W7 D6"]);
+      row.add(associateList[i]["W7 D7"]);
       rows.add(row);
     }
 
@@ -197,8 +321,7 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   // padding: const EdgeInsets.only(top: 20),
                   children: <Widget>[
-                    RaisedButton(
-                      elevation: 2,
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -207,13 +330,6 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                           ),
                         );
                       },
-                      color: const Color(0xffF8EEF9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(color: Color(0xffB993BC), width: 1),
-                      ),
-                      padding: const EdgeInsets.only(
-                          left: 30, right: 30, top: 5, bottom: 5),
                       child: const Text(
                         'Configure Users',
                         style: TextStyle(
@@ -223,12 +339,20 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                           fontSize: 30,
                         ),
                       ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2, backgroundColor: const Color(0xffF8EEF9),
+                        padding: const EdgeInsets.only(
+                            left: 30, right: 30, top: 5, bottom: 5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: BorderSide(color: Color(0xffB993BC), width: 1),
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 15,
                     ),
-                    RaisedButton(
-                      elevation: 2,
+                    ElevatedButton(
                       onPressed: () {
                         getDownloadData();
                         // _generateCsvFiles();
@@ -239,13 +363,6 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                         //   ),
                         // );
                       },
-                      color: const Color(0xffF8EEF9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(color: Color(0xffB993BC), width: 1),
-                      ),
-                      padding: const EdgeInsets.only(
-                          left: 30, right: 30, top: 5, bottom: 5),
                       child: const Text(
                         'Download Data',
                         style: TextStyle(
@@ -255,12 +372,20 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                           fontSize: 30,
                         ),
                       ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                            left: 30, right: 30, top: 5, bottom: 5), backgroundColor: const Color(0xffF8EEF9),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: BorderSide(color: Color(0xffB993BC), width: 1),
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 15,
                     ),
-                    RaisedButton(
-                      elevation: 2,
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -269,13 +394,6 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                           ),
                         );
                       },
-                      color: const Color(0xffF8EEF9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(color: Color(0xffB993BC), width: 1),
-                      ),
-                      padding: const EdgeInsets.only(
-                          left: 30, right: 30, top: 5, bottom: 5),
                       child: const Text(
                         'Manage Admins',
                         style: TextStyle(
@@ -285,23 +403,23 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                           fontSize: 30,
                         ),
                       ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                            left: 30, right: 30, top: 5, bottom: 5), backgroundColor: const Color(0xffF8EEF9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: BorderSide(color: Color(0xffB993BC), width: 1),
+                        ),
+                        elevation: 2,
+                      ),
                     ),
                     const SizedBox(
                       height: 15,
                     ),
-                    RaisedButton(
-                      elevation: 2,
+                    ElevatedButton(
                       onPressed: () {
                         logout();
                       },
-                      color: const Color(0xffF8EEF9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(
-                            color: const Color(0xffB993BC), width: 1),
-                      ),
-                      padding: const EdgeInsets.only(
-                          left: 80, right: 80, top: 5, bottom: 5),
                       child: const Text(
                         'Log Out',
                         style: TextStyle(
@@ -310,6 +428,17 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
                           fontWeight: FontWeight.w400,
                           fontSize: 30,
                         ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                          left: 80, right: 80, top: 5, bottom: 5),
+                        backgroundColor: const Color(0xffF8EEF9),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: BorderSide(
+                              color: const Color(0xffB993BC), width: 1),
+                        ),
+                        elevation: 2,
                       ),
                     ),
                   ],
@@ -332,5 +461,4 @@ class _super_admin_home_screen extends State<super_admin_home_screen> {
         ),
         (route) => false);
   }
-
 }

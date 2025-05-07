@@ -1,8 +1,9 @@
 import 'dart:io' show File, Platform;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications_plus/flutter_local_notifications_plus.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationPlugin {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -23,7 +24,7 @@ class NotificationPlugin {
   }
 
   initializePlatformSpecifics() {
-    var initializationSettingsIOS = IOSInitializationSettings(
+    var initializationSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: false,
@@ -58,8 +59,8 @@ class NotificationPlugin {
 
   setOnNotificationClick(Function onNotificationClick) async {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (String? payload) async {
-      onNotificationClick(payload);
+        onDidReceiveNotificationResponse: (details) {
+      onNotificationClick(details);
     });
   }
 
@@ -74,7 +75,7 @@ class NotificationPlugin {
       timeoutAfter: 5000,
       styleInformation: DefaultStyleInformation(true, true),
     );
-    var iosChannelSpecifics = IOSNotificationDetails();
+    var iosChannelSpecifics = DarwinNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         android: androidChannelSpecifics, iOS: iosChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
@@ -86,31 +87,8 @@ class NotificationPlugin {
     );
   }
 
-  // Future<void> showDailyAtTime() async {
-  //   print('timer start');
-  //   var time = Time(16, 43, 0);
-  //   var androidChannelSpecifics = AndroidNotificationDetails(
-  //     'CHANNEL_ID 4',
-  //     'CHANNEL_NAME 4',
-  //     channelDescription: "CHANNEL_DESCRIPTION 4",
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //   );
-  //   var iosChannelSpecifics = IOSNotificationDetails();
-  //   var platformChannelSpecifics = NotificationDetails(
-  //       android: androidChannelSpecifics, iOS: iosChannelSpecifics);
-  //   await flutterLocalNotificationsPlugin.showDailyAtTime(
-  //     0,
-  //     'Test Title at ${time.hour}:${time.minute}.${time.second}',
-  //     'Test Body', //null
-  //     time,
-  //     platformChannelSpecifics,
-  //     payload: 'Test Payload',
-  //   );
-  // }
-
   Future<void> showWeeklyAtDayTime() async {
-    var time = Time(21, 5, 0);
+    var time = TimeOfDay(hour: 21, minute: 5);
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID 5',
       'CHANNEL_NAME 5',
@@ -118,18 +96,34 @@ class NotificationPlugin {
       importance: Importance.max,
       priority: Priority.high,
     );
-    var iosChannelSpecifics = IOSNotificationDetails();
+    var iosChannelSpecifics = DarwinNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         android: androidChannelSpecifics, iOS: iosChannelSpecifics);
-    await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      'Test Title at ${time.hour}:${time.minute}.${time.second}',
-      'Test Body', //null
-      Day.saturday,
-      time,
+      'Test Title at ${time.hour}:${time.minute}',
+      'Test Body',
+      _nextInstanceOfWeekdayAndTime(time, Day.saturday),
       platformChannelSpecifics,
       payload: 'Test Payload',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
     );
+  }
+
+  tz.TZDateTime _nextInstanceOfWeekdayAndTime(TimeOfDay time, Day day) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+        tz.local, now.year, now.month, now.day, time.hour, time.minute);
+    while (scheduledDate.weekday != day.value) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 7));
+    }
+    return scheduledDate;
   }
 
   Future<void> repeatNotification() async {
@@ -141,7 +135,7 @@ class NotificationPlugin {
       priority: Priority.high,
       styleInformation: DefaultStyleInformation(true, true),
     );
-    var iosChannelSpecifics = IOSNotificationDetails();
+    var iosChannelSpecifics = DarwinNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         android: androidChannelSpecifics, iOS: iosChannelSpecifics);
     await flutterLocalNotificationsPlugin.periodicallyShow(
@@ -155,7 +149,7 @@ class NotificationPlugin {
   }
 
   Future<void> scheduleNotification() async {
-    var scheduleNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+    var scheduleNotificationDateTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: 5));
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID 1',
       'CHANNEL_NAME 1',
@@ -174,20 +168,23 @@ class NotificationPlugin {
       timeoutAfter: 5000,
       styleInformation: DefaultStyleInformation(true, true),
     );
-    var iosChannelSpecifics = IOSNotificationDetails(
+    var iosChannelSpecifics = DarwinNotificationDetails(
       sound: 'my_sound.aiff',
     );
     var platformChannelSpecifics = NotificationDetails(
       android: androidChannelSpecifics,
       iOS: iosChannelSpecifics,
     );
-    await flutterLocalNotificationsPlugin.schedule(
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       'Test Title',
       'Test Body',
       scheduleNotificationDateTime,
       platformChannelSpecifics,
       payload: 'Test Payload',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

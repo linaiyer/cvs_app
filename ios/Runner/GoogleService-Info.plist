@@ -3,32 +3,33 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>682066856386-sr63clkq52dipm3sqsj7uid9si04nium.apps.googleusercontent.com</string>
+	<string>406342760128-5qr921msone69hfol9u5nhihp0su23ku.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.682066856386-sr63clkq52dipm3sqsj7uid9si04nium</string>
+	<string>com.googleusercontent.apps.406342760128-5qr921msone69hfol9u5nhihp0su23ku</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA3OMKPShrRlim586VJhtjUbcARBacoMtI</string>
+	<string>AIzaSyBy-SB_bbxR5sglhp86OKH7TaY7NIZC5kc</string>
 	<key>GCM_SENDER_ID</key>
-	<string>682066856386</string>
+	<string>406342760128</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.research.csv</string>
+	<string>com.research.csv
+</string>
 	<key>PROJECT_ID</key>
-	<string>research-cvs</string>
+	<string>research-cvs2</string>
 	<key>STORAGE_BUCKET</key>
-	<string>research-cvs.appspot.com</string>
+	<string>research-cvs2.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:682066856386:ios:378c9c1b256714fffeae5b</string>
+	<string>1:406342760128:ios:364299f1b59a841c551f25</string>
 </dict>
 </plist>

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications_plus/flutter_local_notifications_plus.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../main.dart';
@@ -26,8 +26,8 @@ class LocalNotification {
 
   static const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
-  static final IOSInitializationSettings initializationSettingsIOS =
-      IOSInitializationSettings(
+  static final DarwinInitializationSettings initializationSettingsIOS =
+  DarwinInitializationSettings(
     requestAlertPermission: false,
     requestBadgePermission: false,
     requestSoundPermission: true,
@@ -47,8 +47,8 @@ class LocalNotification {
     ),
   );
 
-  static const MacOSInitializationSettings initializationSettingsMacOS =
-      MacOSInitializationSettings(
+  static const DarwinInitializationSettings initializationSettingsMacOS =
+      DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
           requestSoundPermission: false);
@@ -60,7 +60,7 @@ class LocalNotification {
 
   initialize() async {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (payload) async {
+        onDidReceiveNotificationResponse: (payload) async {
       selectedNotificationPayload = payload.toString();
       selectNotificationSubject.add(payload.toString());
     });
@@ -69,7 +69,7 @@ class LocalNotification {
 
   Future<void> showDailyAtTime() async {
     print('timer start');
-    var time = Time(08, 0, 0);
+    var time = TimeOfDay(hour: 8, minute: 0);
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID 4',
       'CHANNEL_NAME 4',
@@ -77,17 +77,29 @@ class LocalNotification {
       importance: Importance.max,
       priority: Priority.high,
     );
-    var iosChannelSpecifics = IOSNotificationDetails();
+    var iosChannelSpecifics = DarwinNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         android: androidChannelSpecifics, iOS: iosChannelSpecifics);
-    await flutterLocalNotificationsPlugin.showDailyAtTime(
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
       'HFNMeditate App Reminder',
-      'Have you logged into practice HFNMeditate App today?', //null
-      time,
+      'Have you logged into practice HFNMeditate App today?',
+      _nextInstanceOfTime(time.hour, time.minute),
       platformChannelSpecifics,
       payload: 'Test Payload',
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
     );
+  }
+
+  tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
   }
 
   void requestPermissions() {

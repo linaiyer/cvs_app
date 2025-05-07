@@ -21,8 +21,6 @@ class _week_screen extends State<week_screen> with RouteAware {
 
   bool showLoader = false;
 
-  final DateFormat formatter = DateFormat('yyyy-dd-MM');
-
   @override
   void initState() {
     getDayData();
@@ -46,104 +44,10 @@ class _week_screen extends State<week_screen> with RouteAware {
     getDayData();
   }
 
-  bool checkRestaurentStatus(String openTime, String closedTime) {
-    TimeOfDay timeNow = TimeOfDay.now();
-    String openHr = openTime.substring(0, 2);
-    String openMin = openTime.substring(3, 5);
-    String openAmPm = openTime.substring(5);
-    print('openAmPm');
-    TimeOfDay timeOpen;
-    if (openAmPm == "AM") {
-      //am case
-      if (openHr == "12") {
-        //if 12AM then time is 00
-        timeOpen = TimeOfDay(hour: 00, minute: int.parse(openMin));
-      } else {
-        timeOpen =
-            TimeOfDay(hour: int.parse(openHr), minute: int.parse(openMin));
-      }
-    } else {
-      //pm case
-      if (openHr == "12") {
-//if 12PM means as it is
-        timeOpen =
-            TimeOfDay(hour: int.parse(openHr), minute: int.parse(openMin));
-      } else {
-//add +12 to conv time to 24hr format
-        timeOpen =
-            TimeOfDay(hour: int.parse(openHr) + 12, minute: int.parse(openMin));
-      }
-    }
-
-    String closeHr = closedTime.substring(0, 2);
-    String closeMin = closedTime.substring(3, 5);
-    String closeAmPm = closedTime.substring(5);
-
-    TimeOfDay timeClose;
-
-    if (closeAmPm == "PM") {
-      //am case
-      if (closeHr == "12") {
-        timeClose = TimeOfDay(hour: 0, minute: int.parse(closeMin));
-      } else {
-        timeClose =
-            TimeOfDay(hour: int.parse(closeHr), minute: int.parse(closeMin));
-      }
-    } else {
-      //pm case
-      if (closeHr == "12") {
-        timeClose =
-            TimeOfDay(hour: int.parse(closeHr), minute: int.parse(closeMin));
-      } else {
-        timeClose = TimeOfDay(
-            hour: int.parse(closeHr) + 12, minute: int.parse(closeMin));
-      }
-    }
-
-    int nowInMinutes = timeNow.hour * 60 + timeNow.minute;
-    int openTimeInMinutes = timeOpen.hour * 60 + timeOpen.minute;
-    int closeTimeInMinutes = timeClose.hour * 60 + timeClose.minute;
-
-//handling day change ie pm to am
-    if ((closeTimeInMinutes - openTimeInMinutes) < 0) {
-      closeTimeInMinutes = closeTimeInMinutes + 1440;
-      if (nowInMinutes >= 0 && nowInMinutes < openTimeInMinutes) {
-        nowInMinutes = nowInMinutes + 1440;
-      }
-      if (openTimeInMinutes < nowInMinutes &&
-          nowInMinutes < closeTimeInMinutes) {
-        return true;
-      }
-    } else if (openTimeInMinutes < nowInMinutes &&
-        nowInMinutes < closeTimeInMinutes) {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool checkCurrentStatus() {
-    TimeOfDay timeNow = TimeOfDay.now();
-    String openHr = '12';
-    String openMin = '00';
-    String openAmPm = 'AM';
-    TimeOfDay timeOpen;
-    timeOpen = TimeOfDay(hour: int.parse(openHr), minute: int.parse(openMin));
-
-    String closeHr = DateTime.now().hour.toString();
-    String closeMin = DateTime.now().minute.toString();
-    String closeAmPm = DateFormat.jm().format(DateTime.now()).substring(5);
-    TimeOfDay timeClose;
-
-    timeClose =
-        TimeOfDay(hour: int.parse(closeHr), minute: int.parse(closeMin));
-    if (timeOpen.hour < timeClose.hour) {
-      print('done');
-      print(timeOpen.hour);
-      print(timeClose.hour);
-      return true;
-    }
-    return false;
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
   }
 
   getDayData() async {
@@ -156,42 +60,27 @@ class _week_screen extends State<week_screen> with RouteAware {
         .then((QuerySnapshot querySnapshot) => {
               querySnapshot.docs.forEach((doc) {
                 if (doc != null) {
-                  Map<String, dynamic>? documentData = doc.data()
-                      as Map<String, dynamic>?; //if it is a single document
+                  Map<String, dynamic>? documentData = doc.data() as Map<String, dynamic>?; //if it is a single document
 
-                  print('documentData.toString()');
-                  print(documentData.toString());
-                  print(documentData!['done_date']);
-                  if (int.parse(documentData['done_week']) > widget.week) {
+                  // print('documentData.toString()');
+                  // print(documentData.toString());
+                  // print(documentData!['done_date']);
+                  int curWeek = daysBetween(DateTime.parse(documentData!['start_date']), (DateTime.now())) ~/ 7;
+                  print(widget.week);
+                  if (curWeek > widget.week - 1) {
                     setState(() {
                       doneDay = 4;
                       showLoader = false;
                     });
                   } else {
-                    // if (documentData['done_date'].trim().isNotEmpty) {
-                    //   if (formatter.format(DateTime.now()).compareTo(documentData['done_date']) != 0) {
                     print('DateFormat().add_jm().format(DateTime.now())');
                     print(DateFormat().add_jm().format(DateTime.now()));
-                    // checkCurrentStatus();
 
                     setState(() {
-                      doneDay = int.parse(documentData['done_day']);
+                      doneDay = daysBetween(DateTime.parse(documentData!['start_date']), (DateTime.now())) % 7;
+                      print(doneDay);
                       showLoader = false;
                     });
-                    // } else {
-                    //   setState(() {
-                    //     doneDay = int.parse(documentData['done_day']) != 0
-                    //         ? int.parse(documentData['done_day'])
-                    //         : -1;
-                    //     showLoader = false;
-                    //   });
-                    // }
-                    // } else {
-                    //   setState(() {
-                    //     doneDay = int.parse(documentData['done_day']);
-                    //     showLoader = false;
-                    //   });
-                    // }
                   }
                 }
               }),
@@ -271,6 +160,7 @@ class _week_screen extends State<week_screen> with RouteAware {
                               );
                             }
                           : () {
+                        //TODO: Can a user see the week screen even if they haven't unlocked the week?
                               Fluttertoast.showToast(
                                   msg: 'Please wait till 12:00 Am for unlock',
                                   toastLength: Toast.LENGTH_SHORT,

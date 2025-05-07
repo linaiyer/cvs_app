@@ -43,36 +43,21 @@ class _login extends State<login> {
                       Map<String, dynamic>? documentData = doc.data()
                           as Map<String, dynamic>?; //if it is a single document
 
-                      print('documentData.toString()');
-                      print(documentData.toString());
+                      // print('documentData.toString()');
+                      // print(documentData.toString());
 
                       pref.setString('user_id', documentData!['id']);
                       pref.setString('user_type', documentData['user_type']);
                       if (documentData['user_type'] == '0') {
-                        if (documentData['done_date'] == '') {
+                        if (documentData['start_date'] == '') {
                           FirebaseFirestore.instance
                               .collection('user')
                               .doc(documentData['id'])
                               .update({
-                            'done_date': DateFormat('yyyy-dd-MM')
+                            'start_date': DateFormat('yyyy-MM-dd')
                                 .format(DateTime.now())
                                 .toString()
                           }).whenComplete(() {
-                            if (documentData['user_type'] == '1') {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          super_admin_home_screen()),
-                                  (route) => false);
-                            } else if (documentData['user_type'] == '2') {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          admin_home_screen()),
-                                  (route) => false);
-                            } else {
                               LocalNotification().showDailyAtTime();
                               // LocalNotification().repeatNotification();
                               // LocalNotification().zonedScheduleNotification();
@@ -82,36 +67,16 @@ class _login extends State<login> {
                                       builder: (context) =>
                                           bottom_navigation()),
                                   (route) => false);
-                            }
 
                             setState(() {
                               showLoader = false;
                             });
                           });
                         } else {
-                          if (documentData['user_type'] == '1') {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        super_admin_home_screen()),
-                                (route) => false);
-                          } else if (documentData['user_type'] == '2') {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => admin_home_screen()),
-                                (route) => false);
-                          } else {
                             LocalNotification().showDailyAtTime();
-                            // LocalNotification().repeatNotification();
-                            // LocalNotification().zonedScheduleNotification();
                             Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => bottom_navigation()),
-                                (route) => false);
-                          }
+                                MaterialPageRoute(builder: (context) => bottom_navigation()), (route) => false);
                         }
                       } else {
                         if (documentData['user_type'] == '1') {
@@ -122,6 +87,7 @@ class _login extends State<login> {
                                       super_admin_home_screen()),
                               (route) => false);
                         } else if (documentData['user_type'] == '2') {
+                          print("hi");
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -145,8 +111,7 @@ class _login extends State<login> {
                     }
                   }),
                 }
-              else
-                {
+              else {
                   setState(() {
                     showLoader = false;
                   }),
@@ -175,7 +140,7 @@ class _login extends State<login> {
                 Padding(
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.width / 3, bottom: 20),
-                  child: Image.asset('assets/images/login_image.png'),
+                  child: Opacity(opacity: 0.0, child: Image.asset('assets/images/login_image.png'),),
                 ),
                 const Text(
                   'Login',
@@ -299,27 +264,28 @@ class _login extends State<login> {
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
-                    : RaisedButton(
-                        onPressed: () {
-                          if (formKeyLogin.currentState!.validate()) {
-                            formKeyLogin.currentState!.save();
-                            userAccess();
-                          }
-                        },
-                        color: const Color(0xffC299F6),
+                    : ElevatedButton(
+                      onPressed: () {
+                        if (formKeyLogin.currentState!.validate()) {
+                          formKeyLogin.currentState!.save();
+                          userAccess();
+                        }
+                      },
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(
+                            left: 30, right: 30, top: 3, bottom: 3), backgroundColor: const Color(0xffC299F6),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                        padding: const EdgeInsets.only(
-                            left: 30, right: 30, top: 3, bottom: 3),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 20),
-                        ),
                       ),
+                    ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(

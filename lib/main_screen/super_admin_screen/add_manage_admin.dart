@@ -39,13 +39,12 @@ class _add_manage_admin extends State<add_manage_admin> {
   }
 
   void showSnackBar(text) {
-    _scaffoldKey.currentState!.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(text),
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -265,27 +264,28 @@ class _add_manage_admin extends State<add_manage_admin> {
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
-                        : RaisedButton(
-                            onPressed: () {
-                              if (formKeyAdmin.currentState!.validate()) {
-                                formKeyAdmin.currentState!.save();
-                                addPatient();
-                              }
-                            },
-                            color: const Color(0xffC299F6),
+                        : ElevatedButton(
+                          onPressed: () {
+                            if (formKeyAdmin.currentState!.validate()) {
+                              formKeyAdmin.currentState!.save();
+                              addPatient();
+                            }
+                          },
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 20),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.only(
+                                left: 30, right: 30, top: 8, bottom: 8), backgroundColor: const Color(0xffC299F6),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),
-                            padding: const EdgeInsets.only(
-                                left: 30, right: 30, top: 8, bottom: 8),
-                            child: const Text(
-                              'Submit',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 20),
-                            ),
                           ),
+                        ),
                   ],
                 ),
               ),

@@ -50,7 +50,13 @@ class _home_screen extends State<home_screen> with RouteAware {
     });
     if (pref.get('user_id') != null) {
       updateDayAndWeek();
-    } else {}
+    }
+  }
+
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
   }
 
   updateDayAndWeek() async {
@@ -65,34 +71,8 @@ class _home_screen extends State<home_screen> with RouteAware {
           Map<String, dynamic>? documentData =
               doc.data() as Map<String, dynamic>?; //if it is a single document
 
-          print('user Update');
-          print(documentData.toString());
-
           pref.setString('user_id', documentData!['id']);
           pref.setString('user_type', documentData['user_type']);
-
-          if (DateFormat('yyyy-dd-MM')
-                  .format(DateTime.now())
-                  .compareTo(documentData['done_date']) !=
-              0) {
-            FirebaseFirestore.instance
-                .collection('user')
-                .doc(documentData['id'])
-                .update({
-              'done_date':
-                  DateFormat('yyyy-dd-MM').format(DateTime.now()).toString(),
-              'done_week':
-                  '${documentData['done_week'] == '6' ? '6' : documentData['done_day'] == '4' ? int.parse(documentData['done_week']) + 1 : int.parse(documentData['done_week'])}',
-              'done_day':
-                  '${documentData['done_week'] == '0' || documentData['done_day'] == '4' ? '0' : int.parse(documentData['done_day']) + 1}',
-              'achievement':
-                  '${documentData['done_week'] == '0' || documentData['done_day'] == '4' ? int.parse(documentData['achievement']) + 1 : int.parse(documentData['achievement'])}',
-            }).whenComplete(() {
-              setState(() {
-                showLoader = false;
-              });
-            });
-          }
         } else {
           setState(() {
             showLoader = false;
@@ -109,11 +89,10 @@ class _home_screen extends State<home_screen> with RouteAware {
                   if (doc != null) {
                     Map<String, dynamic>? documentData = doc.data()
                         as Map<String, dynamic>?; //if it is a single document
-                    print('documentData.toString()');
-                    print(documentData.toString());
 
                     setState(() {
-                      doneWeek = int.parse(documentData!['done_week']);
+                      doneWeek = daysBetween(DateTime.parse(documentData!['start_date']), (DateTime.now())) ~/ 7;
+                      print(doneWeek);
                       showLoader = false;
                     });
                   } else {
@@ -124,81 +103,6 @@ class _home_screen extends State<home_screen> with RouteAware {
                 }),
               });
     });
-  }
-
-  bool checkRestaurentStatus(String openTime, String closedTime) {
-    TimeOfDay timeNow = TimeOfDay.now();
-    String openHr = openTime.substring(0, 2);
-    String openMin = openTime.substring(3, 5);
-    String openAmPm = openTime.substring(5);
-    TimeOfDay timeOpen;
-    if (openAmPm == "AM") {
-      //am case
-      if (openHr == "12") {
-        //if 12AM then time is 00
-        timeOpen = TimeOfDay(hour: 00, minute: int.parse(openMin));
-      } else {
-        timeOpen =
-            TimeOfDay(hour: int.parse(openHr), minute: int.parse(openMin));
-      }
-    } else {
-      //pm case
-      if (openHr == "12") {
-//if 12PM means as it is
-        timeOpen =
-            TimeOfDay(hour: int.parse(openHr), minute: int.parse(openMin));
-      } else {
-//add +12 to conv time to 24hr format
-        timeOpen =
-            TimeOfDay(hour: int.parse(openHr) + 12, minute: int.parse(openMin));
-      }
-    }
-
-    String closeHr = closedTime.substring(0, 2);
-    String closeMin = closedTime.substring(3, 5);
-    String closeAmPm = closedTime.substring(5);
-
-    TimeOfDay timeClose;
-
-    if (closeAmPm == "AM") {
-      //am case
-      if (closeHr == "12") {
-        timeClose = TimeOfDay(hour: 0, minute: int.parse(closeMin));
-      } else {
-        timeClose =
-            TimeOfDay(hour: int.parse(closeHr), minute: int.parse(closeMin));
-      }
-    } else {
-      //pm case
-      if (closeHr == "12") {
-        timeClose =
-            TimeOfDay(hour: int.parse(closeHr), minute: int.parse(closeMin));
-      } else {
-        timeClose = TimeOfDay(
-            hour: int.parse(closeHr) + 12, minute: int.parse(closeMin));
-      }
-    }
-
-    int nowInMinutes = timeNow.hour * 60 + timeNow.minute;
-    int openTimeInMinutes = timeOpen.hour * 60 + timeOpen.minute;
-    int closeTimeInMinutes = timeClose.hour * 60 + timeClose.minute;
-
-//handling day change ie pm to am
-    if ((closeTimeInMinutes - openTimeInMinutes) < 0) {
-      closeTimeInMinutes = closeTimeInMinutes + 1440;
-      if (nowInMinutes >= 0 && nowInMinutes < openTimeInMinutes) {
-        nowInMinutes = nowInMinutes + 1440;
-      }
-      if (openTimeInMinutes < nowInMinutes &&
-          nowInMinutes < closeTimeInMinutes) {
-        return true;
-      }
-    } else if (openTimeInMinutes < nowInMinutes &&
-        nowInMinutes < closeTimeInMinutes) {
-      return true;
-    }
-
-    return false;
   }
 
   @override
@@ -331,7 +235,7 @@ class _home_screen extends State<home_screen> with RouteAware {
                     ),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(32.0),
-                      onTap: doneWeek != null && doneWeek >= 1
+                      onTap: doneWeek != null && doneWeek >= 0
                           ? () {
                               Navigator.push(
                                 context,
@@ -378,13 +282,13 @@ class _home_screen extends State<home_screen> with RouteAware {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: doneWeek != null && doneWeek == 1
+                            child: doneWeek != null && doneWeek == 0
                                 ? Image.asset(
                                     'assets/icons/next_arrow.png',
                                     height: 35,
                                     width: 35,
                                   )
-                                : doneWeek != null && doneWeek > 1
+                                : doneWeek != null && doneWeek > 0
                                     ? Image.asset(
                                         'assets/icons/right.png',
                                         height: 35,
@@ -410,7 +314,7 @@ class _home_screen extends State<home_screen> with RouteAware {
                       borderRadius: BorderRadius.circular(32.0),
                     ),
                     child: InkWell(
-                      onTap: doneWeek != null && doneWeek >= 2
+                      onTap: doneWeek != null && doneWeek >= 1
                           ? () {
                               Navigator.push(
                                 context,
@@ -458,13 +362,13 @@ class _home_screen extends State<home_screen> with RouteAware {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: doneWeek != null && doneWeek == 2
+                            child: doneWeek != null && doneWeek == 1
                                 ? Image.asset(
                                     'assets/icons/next_arrow.png',
                                     height: 35,
                                     width: 35,
                                   )
-                                : doneWeek != null && doneWeek > 2
+                                : doneWeek != null && doneWeek > 1
                                     ? Image.asset(
                                         'assets/icons/right.png',
                                         height: 35,
@@ -490,7 +394,7 @@ class _home_screen extends State<home_screen> with RouteAware {
                       borderRadius: BorderRadius.circular(32.0),
                     ),
                     child: InkWell(
-                      onTap: doneWeek != null && doneWeek >= 3
+                      onTap: doneWeek != null && doneWeek >= 2
                           ? () {
                               Navigator.push(
                                 context,
@@ -538,6 +442,86 @@ class _home_screen extends State<home_screen> with RouteAware {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15, right: 15),
+                            child: doneWeek != null && doneWeek == 2
+                                ? Image.asset(
+                                    'assets/icons/next_arrow.png',
+                                    height: 35,
+                                    width: 35,
+                                  )
+                                : doneWeek != null && doneWeek > 2
+                                    ? Image.asset(
+                                        'assets/icons/right.png',
+                                        height: 35,
+                                        width: 35,
+                                      )
+                                    : Image.asset(
+                                        'assets/icons/lock.png',
+                                        height: 35,
+                                        width: 35,
+                                      ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Card(
+                    color: const Color(0xffF8EEF9),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                    ),
+                    child: InkWell(
+                      onTap: doneWeek != null && doneWeek >= 3
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => week_screen(
+                                    title: 'Week Four',
+                                    week: 4,
+                                  ),
+                                ),
+                              );
+                            }
+                          : () {
+                              Fluttertoast.showToast(
+                                  msg: 'First Complete Previous Step',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 3,
+                                  backgroundColor: Color(0xffC299F6),
+                                  textColor: Colors.white);
+                            },
+                      borderRadius: BorderRadius.circular(32.0),
+                      child: Row(
+                        children: <Widget>[
+                          const Expanded(
+                            child: SizedBox(
+                              height: 60,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: 30, top: 10, bottom: 10),
+                                child: Text(
+                                  'Week Four',
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 33,
+                                      fontFamily: 'Anaheim'),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 1,
+                            height: 50,
+                            color: Color(0xffB993BC),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15, right: 15),
                             child: doneWeek != null && doneWeek == 3
                                 ? Image.asset(
                                     'assets/icons/next_arrow.png',
@@ -577,7 +561,7 @@ class _home_screen extends State<home_screen> with RouteAware {
                                 MaterialPageRoute(
                                   builder: (context) => week_screen(
                                     title: 'Week Four',
-                                    week: 4,
+                                    week: 5,
                                   ),
                                 ),
                               );
@@ -601,7 +585,7 @@ class _home_screen extends State<home_screen> with RouteAware {
                                 padding: EdgeInsets.only(
                                     left: 30, top: 10, bottom: 10),
                                 child: Text(
-                                  'Week Four',
+                                  'Week Five',
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
@@ -656,8 +640,8 @@ class _home_screen extends State<home_screen> with RouteAware {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => week_screen(
-                                    title: 'Week Four',
-                                    week: 5,
+                                    title: 'Week Six',
+                                    week: 6,
                                   ),
                                 ),
                               );
@@ -681,7 +665,7 @@ class _home_screen extends State<home_screen> with RouteAware {
                                 padding: EdgeInsets.only(
                                     left: 30, top: 10, bottom: 10),
                                 child: Text(
-                                  'Week Five',
+                                  'Week Six',
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
@@ -735,86 +719,6 @@ class _home_screen extends State<home_screen> with RouteAware {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => week_screen(
-                                    title: 'Week Six',
-                                    week: 6,
-                                  ),
-                                ),
-                              );
-                            }
-                          : () {
-                              Fluttertoast.showToast(
-                                  msg: 'First Complete Previous Step',
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 3,
-                                  backgroundColor: Color(0xffC299F6),
-                                  textColor: Colors.white);
-                            },
-                      borderRadius: BorderRadius.circular(32.0),
-                      child: Row(
-                        children: <Widget>[
-                          const Expanded(
-                            child: SizedBox(
-                              height: 60,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 30, top: 10, bottom: 10),
-                                child: Text(
-                                  'Week Six',
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 33,
-                                      fontFamily: 'Anaheim'),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 1,
-                            height: 50,
-                            color: Color(0xffB993BC),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: doneWeek != null && doneWeek == 6
-                                ? Image.asset(
-                                    'assets/icons/next_arrow.png',
-                                    height: 35,
-                                    width: 35,
-                                  )
-                                : doneWeek != null && doneWeek > 6
-                                    ? Image.asset(
-                                        'assets/icons/right.png',
-                                        height: 35,
-                                        width: 35,
-                                      )
-                                    : Image.asset(
-                                        'assets/icons/lock.png',
-                                        height: 35,
-                                        width: 35,
-                                      ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Card(
-                    color: const Color(0xffF8EEF9),
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                    ),
-                    child: InkWell(
-                      onTap: doneWeek != null && doneWeek >= 7
-                          ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
                                   builder: (context) => play_video_outro_screen(
                                     title: 'Outro',
                                     week: 7,
@@ -858,13 +762,13 @@ class _home_screen extends State<home_screen> with RouteAware {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: doneWeek != null && doneWeek == 7
+                            child: doneWeek != null && doneWeek == 6
                                 ? Image.asset(
                                     'assets/icons/next_arrow.png',
                                     height: 35,
                                     width: 35,
                                   )
-                                : doneWeek != null && doneWeek > 7
+                                : doneWeek != null && doneWeek > 6
                                     ? Image.asset(
                                         'assets/icons/right.png',
                                         height: 35,

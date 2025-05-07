@@ -15,8 +15,6 @@ class splash_screen extends StatefulWidget {
 }
 
 class _splash_screen extends State<splash_screen> with WidgetsBindingObserver {
-  DateTime startDate = new DateTime.now().toLocal();
-
   @override
   void initState() {
     // LocalNotification().requestPermissions();
@@ -50,7 +48,7 @@ class _splash_screen extends State<splash_screen> with WidgetsBindingObserver {
     print("Dispose");
     super.dispose();
     selectNotificationSubject.close();
-    didReceiveLocalNotificationSubject.close();
+    // didReceiveLocalNotificationSubject.close();
     WidgetsBinding.instance!.removeObserver(this);
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:resarch_csv/auth_screen/login.dart';
 import 'package:resarch_csv/main.dart';
 import 'package:resarch_csv/main_screen/terms_of_use.dart';
+import 'package:resarch_csv/main_screen/user_screen/additional_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -270,7 +271,12 @@ class _profile_screen extends State<profile_screen> with RouteAware {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(32.0),
                       onTap: () {
-                        _launchURL();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdditionalResources(),
+                          ),
+                        );
                       },
                       child: Row(
                         children: <Widget>[

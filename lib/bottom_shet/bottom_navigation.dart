@@ -89,15 +89,8 @@ class _bottom_navigation extends State<bottom_navigation> {
               ),
               label: ""),
           BottomNavigationBarItem(
-              icon: bottomIcon(
-                currentIndex == 1
-                    ? "assets/icons/acivment_selected.png"
-                    : "assets/icons/acivment_unselected.png",
-              ),
-              label: ""),
-          BottomNavigationBarItem(
             icon: bottomIcon(
-              currentIndex == 2
+              currentIndex == 1
                   ? "assets/icons/setting_selected.png"
                   : "assets/icons/setting_unselected.png",
             ),

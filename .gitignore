@@ -1,0 +1,31 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.packages
+.pub/
+build/
+.idea/
+android/.gradle/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+*.iml
+
+# IDEs and Editor
+.vscode/
+*.swp
+
+# Flutter build files
+build/
+*.aab
+*.apk
+
+# IDE and tool settings
+.idea/
+.vscode/
+
+# Output files
+out.txt
+
+# Video assets over GitHub's limit
+assets/videos/
+
