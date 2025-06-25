@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:resarch_csv/auth_screen/login.dart';
 import 'package:resarch_csv/main_screen/admin_screen/configure_users_screen.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class admin_home_screen extends StatefulWidget {
@@ -282,7 +282,7 @@ class _admin_home_screen extends State<admin_home_screen> {
     //   await f.create(recursive: true);
     //   f.writeAsStringSync("test for share documents file");
     // }
-    ShareExtend.share(f.path, "file");
+    Share.shareXFiles([XFile(f.path)], text: 'research-cvs.csv');
   }
 
   @override

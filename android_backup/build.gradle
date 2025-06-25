@@ -1,0 +1,30 @@
+// android/build.gradle  — root ( *NOT* app ) module
+
+// Keep a project-wide Kotlin version so :app can reference $kotlin_version
+plugins {
+    id "org.jetbrains.kotlin.android" version "1.9.24" apply false
+    id "com.android.application"       version "8.6.0" apply false   // AGP version
+    id "com.google.gms.google-services" version "4.4.1" apply false
+    id "dev.flutter.flutter-gradle-plugin" version "1.0.0" apply false
+}
+
+// Optional helper for local builds that still need repositories in this file
+// (remove the whole block if you prefer settings-only repos)
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // jcenter()  ← add only if some ancient dependency still needs it
+    }
+}
+
+// Share one build/ directory for every sub-project
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+// Gradle clean task
+tasks.register("clean", Delete) {
+    delete rootProject.layout.buildDirectory
+}

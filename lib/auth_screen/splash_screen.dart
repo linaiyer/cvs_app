@@ -68,6 +68,8 @@ class _splash_screen extends State<splash_screen> with WidgetsBindingObserver {
       case AppLifecycleState.detached:
         print('appLifeCycleState detached');
         break;
+      case AppLifecycleState.hidden:
+        break;
     }
   }
 

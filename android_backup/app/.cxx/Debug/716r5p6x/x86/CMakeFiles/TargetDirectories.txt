@@ -1,0 +1,2 @@
+/Users/linaiyer/cvs_app/android/app/.cxx/Debug/716r5p6x/x86/CMakeFiles/edit_cache.dir
+/Users/linaiyer/cvs_app/android/app/.cxx/Debug/716r5p6x/x86/CMakeFiles/rebuild_cache.dir
