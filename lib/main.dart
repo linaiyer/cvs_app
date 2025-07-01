@@ -18,11 +18,11 @@ import 'package:provider/provider.dart';
 import 'package:resarch_csv/auth_screen/splash_screen.dart';
 import 'package:resarch_csv/notification/NotificationPlugin.dart';
 import 'package:resarch_csv/notification/push_notification_handler.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
