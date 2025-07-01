@@ -82,8 +82,8 @@ class LocalNotification {
         android: androidChannelSpecifics, iOS: iosChannelSpecifics);
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      'HFNMeditate App Reminder',
-      'Have you logged into practice HFNMeditate App today?',
+      'WellnessMeditate App Reminder',
+      'Have you logged into practice WellnessMeditate App today?',
       _nextInstanceOfTime(time.hour, time.minute),
       platformChannelSpecifics,
       payload: 'Test Payload',

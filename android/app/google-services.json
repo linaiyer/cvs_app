@@ -2,22 +2,17 @@
   "project_info": {
     "project_number": "406342760128",
     "project_id": "research-cvs2",
-    "storage_bucket": "research-cvs2.appspot.com"
+    "storage_bucket": "research-cvs2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:406342760128:android:92748ccaddea11e2551f25",
+        "mobilesdk_app_id": "1:406342760128:android:0e88df92b27771bc551f25",
         "android_client_info": {
           "package_name": "com.research.cvs"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "406342760128-5biuc1g7u4r7tbq3k91k02spjh2et9l7.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyCQdSYz1cs417wmoojQQJqy8C3PZ9Si7Xg"
@@ -25,12 +20,45 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "406342760128-5biuc1g7u4r7tbq3k91k02spjh2et9l7.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406342760128:android:4529b774e070335e551f25",
+        "android_client_info": {
+          "package_name": "com.research.wellnessmeditate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQdSYz1cs417wmoojQQJqy8C3PZ9Si7Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406342760128:android:92748ccaddea11e2551f25",
+        "android_client_info": {
+          "package_name": "org.cfn.cvsapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQdSYz1cs417wmoojQQJqy8C3PZ9Si7Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }

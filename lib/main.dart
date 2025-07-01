@@ -41,6 +41,14 @@ String? selectedNotificationPayload;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize timezone
+  tz.initializeTimeZones();
+  
+  // Set local timezone
+  String timeZoneName = await FlutterTimezone.getLocalTimezone();
+  tz.setLocalLocation(tz.getLocation(timeZoneName));
+  
   LocalNotification().initialize();
 
   HttpOverrides.global = MyHttpOverrides();
